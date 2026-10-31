@@ -1,0 +1,23 @@
+{
+  "name": "inventory-management-system",
+  "version": "1.0.0",
+  "description": "Simple Inventory Management System for Web Technology Semester Project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node sample_data.js"
+  },
+  "keywords": [
+    "inventory",
+    "web-technology",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "Student",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.3.0",
+    "mongoose": "^9.11.4"
+  }
+}
