@@ -8,7 +8,6 @@ const port = 5000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// connect to mongodb
 mongoose.connect("mongodb://127.0.0.1:27017/inventoryDB")
     .then(() => {
         console.log("Connected to MongoDB");
@@ -17,7 +16,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/inventoryDB")
         console.log("DB connection error:", err);
     });
 
-// routes
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 

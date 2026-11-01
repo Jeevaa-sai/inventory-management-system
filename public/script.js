@@ -1,13 +1,11 @@
 let allProducts = [];
 let currentUser = null;
 
-// run on page load
 window.addEventListener("DOMContentLoaded", async () => {
     try {
         await fetch("/api/auth/init", { method: "POST" });
         await fetch("/api/products/seed", { method: "POST" });
     } catch (e) {
-        console.log("Initialization complete");
     }
 
     const savedUser = sessionStorage.getItem("inventory_user");
@@ -17,7 +15,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// login function
 async function handleLogin(event) {
     event.preventDefault();
 
@@ -51,7 +48,6 @@ async function handleLogin(event) {
     }
 }
 
-// show dashboard screen
 function showDashboard() {
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("appSection").classList.remove("hidden");
@@ -59,7 +55,6 @@ function showDashboard() {
     const badge = document.getElementById("userBadge");
     badge.innerText = `${currentUser.fullName || currentUser.username} (${currentUser.role})`;
 
-    // hide add product form for staff
     const formCard = document.getElementById("formCard");
     if (currentUser.role === "staff") {
         formCard.classList.add("hidden");
@@ -70,7 +65,6 @@ function showDashboard() {
     loadProducts();
 }
 
-// logout
 function handleLogout() {
     sessionStorage.removeItem("inventory_user");
     currentUser = null;
@@ -81,7 +75,6 @@ function handleLogout() {
     document.getElementById("loginMessage").className = "message";
 }
 
-// fetch all products
 async function loadProducts() {
     try {
         const response = await fetch("/api/products");
@@ -90,11 +83,10 @@ async function loadProducts() {
         updateStats(allProducts);
         renderTable(allProducts);
     } catch (error) {
-        console.log("Error loading products:", error);
+        console.log("Error:", error);
     }
 }
 
-// calculate summary stats
 function updateStats(products) {
     const totalProducts = products.length;
     const totalQuantity = products.reduce((sum, item) => sum + item.quantity, 0);
@@ -107,7 +99,6 @@ function updateStats(products) {
     document.getElementById("statTotalValue").innerText = "₹" + totalValue.toLocaleString("en-IN");
 }
 
-// display products in table
 function renderTable(products) {
     const tbody = document.getElementById("productTableBody");
     tbody.innerHTML = "";
@@ -155,7 +146,6 @@ function renderTable(products) {
     });
 }
 
-// add or update product
 async function saveProduct(event) {
     event.preventDefault();
 
@@ -212,7 +202,6 @@ async function saveProduct(event) {
     }, 3000);
 }
 
-// edit product
 function editProduct(id) {
     const product = allProducts.find(item => item._id === id);
     if (!product) return;
@@ -231,7 +220,6 @@ function editProduct(id) {
     document.getElementById("formCard").scrollIntoView({ behavior: "smooth" });
 }
 
-// cancel editing
 function cancelEdit() {
     document.getElementById("productForm").reset();
     document.getElementById("productId").value = "";
@@ -240,7 +228,6 @@ function cancelEdit() {
     document.getElementById("cancelButton").classList.add("hidden");
 }
 
-// delete product
 async function deleteProduct(id) {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
@@ -259,7 +246,6 @@ async function deleteProduct(id) {
     }
 }
 
-// adjust stock quantity
 async function adjustStock(id, change) {
     try {
         const response = await fetch(`/api/products/${id}/stock`, {
@@ -279,7 +265,6 @@ async function adjustStock(id, change) {
     }
 }
 
-// search and category filter
 function filterProducts() {
     const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
     const selectedCategory = document.getElementById("categoryFilter").value;

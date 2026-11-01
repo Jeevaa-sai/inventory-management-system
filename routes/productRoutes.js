@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 
-// get all products
 router.get("/", async (req, res) => {
     try {
         const products = await Product.find();
@@ -12,7 +11,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-// get single product by id
 router.get("/:id", async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -25,7 +23,6 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// add product
 router.post("/", async (req, res) => {
     try {
         const { name, category, price, quantity, minStock } = req.body;
@@ -52,7 +49,6 @@ router.post("/", async (req, res) => {
     }
 });
 
-// update product
 router.put("/:id", async (req, res) => {
     try {
         const updated = await Product.findByIdAndUpdate(
@@ -74,7 +70,6 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-// delete product
 router.delete("/:id", async (req, res) => {
     try {
         const deleted = await Product.findByIdAndDelete(req.params.id);
@@ -87,7 +82,6 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-// adjust stock (+1 or -1)
 router.patch("/:id/stock", async (req, res) => {
     try {
         const { change } = req.body;
@@ -114,7 +108,6 @@ router.patch("/:id/stock", async (req, res) => {
     }
 });
 
-// seed sample products
 router.post("/seed", async (req, res) => {
     try {
         const count = await Product.countDocuments();

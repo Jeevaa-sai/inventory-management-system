@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 
-// set up sample users
 router.post("/init", async (req, res) => {
     try {
         const count = await User.countDocuments();
@@ -19,7 +18,6 @@ router.post("/init", async (req, res) => {
     }
 });
 
-// login
 router.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
