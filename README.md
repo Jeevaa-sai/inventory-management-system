@@ -24,8 +24,7 @@ Inventory Management System/
 │   ├── authRoutes.js              # Login API
 │   └── productRoutes.js           # Product CRUD & Stock Adjust API
 ├── server.js                      # Express backend & static React hosting
-├── package.json                   # Backend dependencies
-└── LINE_BY_LINE_EXPLANATION.md    # Complete viva guide
+└── package.json                   # Backend dependencies
 ```
 
 ## How to Run
