@@ -9,7 +9,8 @@ const path = require("path");
 
 // Step 1: Initialize Express application
 const app = express();
-const port = 3000;
+// Using port 5000 (alternate development port from Module 4 Slide 11)
+const port = 5000;
 
 // Step 2: Configure Built-in Middleware
 // express.json(): Parses incoming HTTP requests with JSON payloads (req.body)
