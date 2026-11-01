@@ -1,44 +1,37 @@
-# Inventory Management System (Web Technology Semester Project)
+# Inventory Management System
 
-A full-stack, syllabus-compliant Web Technology application built with **HTML5, CSS3, Vanilla JavaScript, Node.js, Express.js, and MongoDB (Mongoose)**.
+Web Technology semester project built using HTML, CSS, JavaScript, Node.js, Express, and MongoDB.
 
-## Project Structure
-```text
-Inventory Management System/
-├── package.json                   # Dependencies (express, mongoose) & start script
-├── server.js                      # Express app setup, MongoDB connection, static serving (Port 5000)
-├── models/
-│   ├── Product.js                 # Mongoose Schema & Model for inventory products
-│   └── User.js                    # Mongoose Schema & Model for user accounts (RBAC)
-├── routes/
-│   ├── authRoutes.js              # Authentication endpoints (/api/auth/login, /api/auth/init)
-│   └── productRoutes.js           # Product CRUD & stock adjustment endpoints (/api/products)
-├── public/
-│   ├── index.html                 # Semantic HTML5 user interface (Login + Dashboard)
-│   ├── style.css                  # Clean CSS styling (Flexbox, Grid, Table, Badges)
-│   └── script.js                  # Frontend JavaScript (fetch API, DOM manipulation)
-├── LINE_BY_LINE_EXPLANATION.md    # Comprehensive line-by-line viva guide & exam answers
-└── README.md                      # Project documentation
-```
+## Project Files
+- `server.js` - Express backend server and MongoDB connection
+- `models/Product.js` - Product database schema (name, category, price, quantity, minStock)
+- `models/User.js` - User schema for login and roles (admin and staff)
+- `routes/authRoutes.js` - User login route
+- `routes/productRoutes.js` - Product CRUD operations and stock adjustment
+- `public/index.html` - Main HTML interface with login and inventory dashboard
+- `public/style.css` - Simple CSS styling
+- `public/script.js` - Frontend JavaScript fetch calls and DOM updates
+- `LINE_BY_LINE_EXPLANATION.md` - Line-by-line code explanation for viva
 
-## How to Run
+## Setup and Running
 
-1. Open your terminal in this directory:
+1. Install dependencies:
    ```bash
-   cd "d:\Projects\Inventory Management System"
+   npm install
    ```
 
-2. Start the server:
+2. Make sure MongoDB is running locally.
+
+3. Start the server:
    ```bash
    npm start
    ```
 
-3. Open your browser and navigate to:
+4. Open browser and visit:
    ```text
    http://localhost:5000
    ```
 
-## Demo Credentials
-* **Admin Account:** `admin` / `admin123` (Full permissions: Add, Edit, Delete, Stock In/Out)
-* **Staff Account:** `staff` / `staff123` (Stock updates & view only)
-
+## Demo Accounts
+- **Admin:** `admin` / `admin123` (Can add, edit, delete, and adjust stock)
+- **Staff:** `staff` / `staff123` (Can view products and adjust stock)

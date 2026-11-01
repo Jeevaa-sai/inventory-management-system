@@ -4,97 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Management System</title>
-    <!-- External CSS stylesheet (Module 2) -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
 
-        <!-- ========================================== -->
-        <!-- 1. LOGIN SECTION (Module 5 Authentication) -->
-        <!-- ========================================== -->
+        <!-- Login Card -->
         <section id="loginSection" class="card">
-            <h2>Inventory System Login</h2>
+            <h2>User Login</h2>
             <div id="loginMessage" class="message"></div>
             
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group" style="margin-bottom: 12px;">
-                    <label for="loginUsername">Username:</label>
-                    <input type="text" id="loginUsername" placeholder="e.g. admin or staff" required>
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter username" required>
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="loginPassword">Password:</label>
+                    <label for="loginPassword">Password</label>
                     <input type="password" id="loginPassword" placeholder="Enter password" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
             </form>
 
-            <div style="margin-top: 15px; font-size: 12px; color: #666; background: #eef2f7; padding: 10px; border-radius: 4px;">
-                <strong>Demo Accounts:</strong><br>
-                &bull; <b>Admin:</b> admin / admin123 (Full CRUD)<br>
-                &bull; <b>Staff:</b> staff / staff123 (View & Stock Updates)
+            <div style="margin-top: 14px; font-size: 12px; color: #555; background: #eef2f7; padding: 8px 10px; border-radius: 4px;">
+                Demo: <b>admin</b> / <b>admin123</b> (Admin) &bull; <b>staff</b> / <b>staff123</b> (Staff)
             </div>
         </section>
 
 
-        <!-- ========================================== -->
-        <!-- 2. MAIN APPLICATION (Shown After Login)   -->
-        <!-- ========================================== -->
+        <!-- Dashboard Screen -->
         <div id="appSection" class="hidden">
             
-            <!-- Header bar with User Profile and Logout -->
             <header>
                 <div>
-                    <h1>📦 Inventory Management System</h1>
+                    <h1>Inventory Management System</h1>
                 </div>
                 <div class="user-info">
-                    <span>Logged in as: <strong id="userBadge">Admin</strong></span>
+                    <span>Welcome, <strong id="userBadge">Admin</strong></span>
                     <button type="button" class="btn btn-danger btn-sm" onclick="handleLogout()">Logout</button>
                 </div>
             </header>
 
-            <!-- Dashboard Summary Stat Cards -->
+            <!-- Stats -->
             <section class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Total Products</div>
                     <div id="statTotalProducts" class="stat-number">0</div>
                 </div>
                 <div class="stat-card success">
-                    <div class="stat-label">Total Items in Stock</div>
+                    <div class="stat-label">Total Stock</div>
                     <div id="statTotalQuantity" class="stat-number">0</div>
                 </div>
                 <div class="stat-card alert">
-                    <div class="stat-label">Low Stock Alerts</div>
+                    <div class="stat-label">Low Stock Items</div>
                     <div id="statLowStock" class="stat-number">0</div>
                 </div>
                 <div class="stat-card value">
-                    <div class="stat-label">Total Inventory Value</div>
+                    <div class="stat-label">Total Value</div>
                     <div id="statTotalValue" class="stat-number">₹0</div>
                 </div>
             </section>
 
-            <!-- Product Form Card (Add / Edit) -->
+            <!-- Product Form -->
             <section class="card" id="formCard">
-                <h2 id="formTitle">Add New Product</h2>
+                <h2 id="formTitle">Add Product</h2>
                 <div id="formMessage" class="message"></div>
 
                 <form id="productForm" onsubmit="saveProduct(event)">
-                    <!-- Hidden input to hold MongoDB _id when editing an existing product -->
                     <input type="hidden" id="productId">
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="productName">Product Name *</label>
-                            <input type="text" id="productName" placeholder="e.g. Wireless Mouse" required>
+                            <label for="productName">Product Name</label>
+                            <input type="text" id="productName" placeholder="Product name" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="productCategory">Category *</label>
+                            <label for="productCategory">Category</label>
                             <select id="productCategory" required>
-                                <option value="">-- Select Category --</option>
+                                <option value="">Select Category</option>
                                 <option value="Electronics">Electronics</option>
                                 <option value="Stationery">Stationery</option>
                                 <option value="Grocery">Grocery</option>
@@ -104,18 +95,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="productPrice">Price (₹) *</label>
-                            <input type="number" id="productPrice" min="0" step="0.01" placeholder="e.g. 499.00" required>
+                            <label for="productPrice">Price (₹)</label>
+                            <input type="number" id="productPrice" min="0" step="0.01" placeholder="Price" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="productQuantity">Quantity *</label>
-                            <input type="number" id="productQuantity" min="0" placeholder="e.g. 20" required>
+                            <label for="productQuantity">Quantity</label>
+                            <input type="number" id="productQuantity" min="0" placeholder="Quantity" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="productMinStock">Low Stock Alert Level</label>
-                            <input type="number" id="productMinStock" min="1" value="5" placeholder="Default 5">
+                            <label for="productMinStock">Alert Level</label>
+                            <input type="number" id="productMinStock" min="1" value="5" placeholder="Minimum stock">
                         </div>
                     </div>
 
@@ -124,13 +115,12 @@
                 </form>
             </section>
 
-            <!-- Inventory Table Card -->
+            <!-- Inventory Table -->
             <section class="card">
-                <h2>Product Inventory List</h2>
+                <h2>Product List</h2>
 
-                <!-- Live Search and Category Filter -->
                 <div class="filter-bar">
-                    <input type="text" id="searchInput" placeholder="🔍 Search products by name..." oninput="filterProducts()">
+                    <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterProducts()">
                     <select id="categoryFilter" onchange="filterProducts()">
                         <option value="ALL">All Categories</option>
                         <option value="Electronics">Electronics</option>
@@ -141,7 +131,6 @@
                     </select>
                 </div>
 
-                <!-- Products Table -->
                 <table>
                     <thead>
                         <tr>
@@ -151,12 +140,11 @@
                             <th>Price</th>
                             <th>Stock</th>
                             <th>Status</th>
-                            <th>Quick Adjust</th>
+                            <th>Stock Adjust</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <!-- Rows rendered dynamically by script.js -->
                     </tbody>
                 </table>
             </section>
@@ -165,8 +153,6 @@
 
     </div>
 
-    <!-- Frontend JavaScript (Module 3 & Module 5) -->
     <script src="script.js"></script>
 </body>
 </html>
-
