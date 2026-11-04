@@ -212,9 +212,6 @@ function App() {
               Login
             </button>
           </form>
-          <div className="demo-info">
-            Demo: <b>admin</b> / <b>admin123</b> (Admin) &bull; <b>staff</b> / <b>staff123</b> (Staff)
-          </div>
         </div>
       </div>
     );
