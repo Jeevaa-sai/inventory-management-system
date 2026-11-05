@@ -1,34 +1,13 @@
 const express = require("express");
-const http = require("http");
 const path = require("path");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const session = require("express-session");
-const { Server } = require("socket.io");
 const { csrfProtection } = require("./middleware/auth");
 
 const app = express();
-const server = http.createServer(app);
 const port = 5000;
 
-// Initialize Socket.IO with CORS for real-time multi-browser sync
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-app.set("io", io);
-
-io.on("connection", (socket) => {
-    console.log(`[WebSocket] Client connected: ${socket.id}`);
-    socket.on("disconnect", () => {
-        console.log(`[WebSocket] Client disconnected: ${socket.id}`);
-    });
-});
-
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -50,7 +29,6 @@ app.use(session({
 app.use(csrfProtection);
 
 // Serve static frontend
-app.use(express.static(path.join(__dirname, "client/dist")));
 app.use(express.static(path.join(__dirname, "public")));
 
 // MongoDB Connection
@@ -73,15 +51,13 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/purchase-orders", purchaseOrderRoutes);
 app.use("/api/users", userRoutes);
 
-// SPA Fallback for client routing
+// Fallback: serve the frontend for any non-API route
 app.use((req, res, next) => {
     if (req.path.startsWith("/api")) return next();
-    res.sendFile(path.join(__dirname, "client/dist/index.html"), (err) => {
-        if (err) res.sendFile(path.join(__dirname, "public/index.html"));
-    });
+    res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 // Start Server
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });

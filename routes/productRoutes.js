@@ -156,9 +156,6 @@ router.post("/", requireRole("admin"), async (req, res) => {
             });
         }
 
-        if (req.app.get("io")) {
-            req.app.get("io").emit("product_created", saved);
-        }
 
         res.status(201).json({
             message: "Product created successfully",
@@ -213,9 +210,6 @@ router.put("/:id", requireRole("admin"), async (req, res) => {
 
         const updated = await product.save();
 
-        if (req.app.get("io")) {
-            req.app.get("io").emit("product_updated", updated);
-        }
 
         res.json({
             message: "Product updated successfully",
@@ -239,9 +233,6 @@ router.delete("/:id", requireRole("admin"), async (req, res) => {
         }
         await StockMovement.deleteMany({ product_id: req.params.id });
 
-        if (req.app.get("io")) {
-            req.app.get("io").emit("product_deleted", { id: req.params.id });
-        }
 
         res.json({ message: "Product and associated movements deleted successfully" });
     } catch (err) {
@@ -303,13 +294,6 @@ router.post("/:id/adjust", requireRole("staff", "manager", "admin"), async (req,
             .populate("product_id", "name sku category")
             .populate("user_id", "username fullName role");
 
-        if (req.app.get("io")) {
-            req.app.get("io").emit("stock_changed", {
-                product: product,
-                movement: populatedMovement,
-                updatedBy: req.session.user.fullName || req.session.user.username
-            });
-        }
 
         res.json({
             message: "Stock adjusted successfully",

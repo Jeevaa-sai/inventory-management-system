@@ -1,4 +1,4 @@
-# Enterprise-Ready Inventory Management System (MERN Stack)
+# Enterprise-Ready Inventory Management System (HTML, CSS, JS + Node.js)
 
 A full-stack, college semester-grade Web Technology project developed for inventory auditing, stock movements tracking, purchase orders, suppliers, and role-based access control.
 
@@ -7,7 +7,7 @@ A full-stack, college semester-grade Web Technology project developed for invent
 ## 🛠️ Technology Stack
 * **Backend:** Node.js & Express.js (v5.3.0) REST API
 * **Database:** MongoDB & Mongoose ODM (v9.11.4)
-* **Frontend:** React 19 Single Page Application (Vite), pure modular CSS (dark navy theme)
+* **Frontend:** Plain HTML, CSS and JavaScript (no framework) in the `public/` folder, using the Fetch API
 * **Visual Analytics:** Chart.js (Doughnut, Bar, and Line charts)
 * **Security & Auth:** Express-Session, Bcrypt password hashing, Double-Submit CSRF protection, and Server-side Role-Based Access Control (RBAC)
 
@@ -17,7 +17,7 @@ A full-stack, college semester-grade Web Technology project developed for invent
 
 | Role | Username | Password | Server & UI Permissions |
 |:---|:---|:---|:---|
-| **Admin** | `admin` | `admin123` | Full control: Add/Edit/Delete products, CSV Import/Export, User Management, Suppliers, Purchase Orders |
+| **Admin** | `admin` | `admin123` | Full control: Add/Edit/Delete products, User Management, Suppliers, Purchase Orders |
 | **Manager** | `manager` | `manager123` | Restock delivery, Manage Suppliers, Issue and Receive Purchase Orders, View Analytics |
 | **Staff** | `staff` | `staff123` | View inventory, adjust stock (`+1`, `-1`, Custom Adjust with reasons: `sold`, `damaged`, `returned`, `correction`) |
 
@@ -28,7 +28,6 @@ A full-stack, college semester-grade Web Technology project developed for invent
 1. **Install Dependencies:**
    ```bash
    npm install
-   cd client && npm install && cd ..
    ```
 
 2. **Seed & Migrate Database:**
@@ -37,12 +36,7 @@ A full-stack, college semester-grade Web Technology project developed for invent
    node scripts/migrateAndSeed.js
    ```
 
-3. **Build Frontend:**
-   ```bash
-   npm run build
-   ```
-
-4. **Start Server:**
+3. **Start Server:**
    ```bash
    npm start
    ```

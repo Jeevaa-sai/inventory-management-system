@@ -55,9 +55,6 @@ router.post("/", requireRole("manager", "admin"), async (req, res) => {
             .populate("supplier_id", "name")
             .populate("created_by", "username fullName");
 
-        if (req.app.get("io")) {
-            req.app.get("io").emit("po_created", populated);
-        }
 
         res.status(201).json({ message: "Purchase order created successfully", purchaseOrder: populated });
     } catch (err) {
@@ -106,14 +103,6 @@ router.post("/:id/receive", requireRole("manager", "admin"), async (req, res) =>
             .populate("supplier_id", "name")
             .populate("created_by", "username fullName");
 
-        if (req.app.get("io")) {
-            req.app.get("io").emit("stock_changed", {
-                product: product,
-                movement: movement,
-                updatedBy: req.session.user.fullName || req.session.user.username
-            });
-            req.app.get("io").emit("po_updated", populatedPO);
-        }
 
         res.json({
             message: `Purchase order marked as received! +${po.quantity} units added to ${product.name}.`,

@@ -1,19 +1,16 @@
 {
   "name": "inventory-management-system",
   "version": "1.0.0",
-  "description": "MERN Stack Inventory Management System",
+  "description": "Inventory Management System (HTML, CSS, JavaScript + Node.js, Express, MongoDB)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "client": "cd client && npm run dev",
-    "build": "cd client && npm run build"
+    "seed": "node scripts/migrateAndSeed.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
     "express": "^5.3.0",
     "express-session": "^1.19.0",
-    "mongoose": "^9.11.4",
-    "socket.io": "^4.8.4"
+    "mongoose": "^9.11.4"
   }
 }

@@ -5,148 +5,489 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Management System</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for dashboard charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<div class="container">
 
-    <div class="container">
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toastContainer"></div>
 
-        <section id="loginSection" class="card">
-            <h2>User Login</h2>
-            <div id="loginMessage" class="message"></div>
-            
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group" style="margin-bottom: 12px;">
-                    <label for="loginUsername">Username</label>
-                    <input type="text" id="loginUsername" placeholder="Enter username" required>
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter password" required>
-                </div>
+    <!-- ================= LOGIN ================= -->
+    <div id="loginView" class="card login-card">
+        <h2>User Authentication</h2>
+        <div id="loginError" class="toast error hidden" style="position: static; margin-bottom: 14px;"></div>
+        <form id="loginForm">
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label>Username</label>
+                <input type="text" id="loginUsername" value="admin" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Password</label>
+                <input type="password" id="loginPassword" value="admin123" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 10px;">Sign In</button>
+        </form>
+        <div class="login-demo-bar">
+            <strong>Demo Credentials:</strong><br>
+            &bull; <b>admin</b> / <code>admin123</code> (Full Administrator)<br>
+            &bull; <b>manager</b> / <code>manager123</code> (Restock, Suppliers, POs)<br>
+            &bull; <b>staff</b> / <code>staff123</code> (Stock adjustments &amp; View)
+        </div>
+    </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-            </form>
+    <!-- ================= MAIN APP ================= -->
+    <div id="appView" class="hidden">
+        <header>
+            <div class="brand-section">
+                <h1>Inventory Management System</h1>
+                <span class="version-pill">v2.0</span>
+            </div>
+            <div class="user-info">
+                <span id="userName"></span>
+                <span id="userRole" class="role-badge"></span>
+                <button class="btn btn-danger btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </header>
 
-            <div style="margin-top: 14px; font-size: 12px; color: #555; background: #eef2f7; padding: 8px 10px; border-radius: 4px;">
-                Demo: <b>admin</b> / <b>admin123</b> (Admin) &bull; <b>staff</b> / <b>staff123</b> (Staff)
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="inventory">📦 Inventory &amp; Stock</button>
+            <button class="tab-btn" data-tab="analytics">📊 Dashboard &amp; Reports</button>
+            <button class="tab-btn" data-tab="orders">📋 Purchase Orders (<span id="pendingCount">0</span> Pending)</button>
+            <button class="tab-btn" data-tab="suppliers">🏢 Suppliers (<span id="supplierCount">0</span>)</button>
+            <button class="tab-btn admin-only" data-tab="users">👥 User Management</button>
+        </nav>
+
+        <!-- KPI cards (shown on inventory and analytics tabs) -->
+        <section class="stats-grid" id="statsSection">
+            <div class="stat-card" id="cardTotal" title="Click to view all products">
+                <div class="stat-label">Total Products</div>
+                <div class="stat-number" id="statTotalProducts">0</div>
+                <div class="stat-hint">Click to show all</div>
+            </div>
+            <div class="stat-card success" id="cardInStock" title="Click to filter in-stock items">
+                <div class="stat-label">Total Stock Units</div>
+                <div class="stat-number" id="statTotalQuantity">0</div>
+                <div class="stat-hint">In-stock filter</div>
+            </div>
+            <div class="stat-card alert" id="cardLowStock" title="Click to filter low stock items">
+                <div class="stat-label">Low Stock Items</div>
+                <div class="stat-number" id="statLowStock">0</div>
+                <div class="stat-hint">Click for reorder alert</div>
+            </div>
+            <div class="stat-card value" id="cardValue" title="Click to view valuation breakdown">
+                <div class="stat-label">Total Inventory Value</div>
+                <div class="stat-number" id="statTotalValue">₹0</div>
+                <div class="stat-hint">View analytics breakdown</div>
             </div>
         </section>
 
-        <div id="appSection" class="hidden">
-            
-            <header>
-                <div>
-                    <h1>Inventory Management System</h1>
-                </div>
-                <div class="user-info">
-                    <span>Welcome, <strong id="userBadge">Admin</strong></span>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="handleLogout()">Logout</button>
-                </div>
-            </header>
-
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Products</div>
-                    <div id="statTotalProducts" class="stat-number">0</div>
-                </div>
-                <div class="stat-card success">
-                    <div class="stat-label">Total Stock</div>
-                    <div id="statTotalQuantity" class="stat-number">0</div>
-                </div>
-                <div class="stat-card alert">
-                    <div class="stat-label">Low Stock Items</div>
-                    <div id="statLowStock" class="stat-number">0</div>
-                </div>
-                <div class="stat-card value">
-                    <div class="stat-label">Total Value</div>
-                    <div id="statTotalValue" class="stat-number">₹0</div>
-                </div>
-            </section>
-
-            <section class="card" id="formCard">
-                <h2 id="formTitle">Add Product</h2>
-                <div id="formMessage" class="message"></div>
-
-                <form id="productForm" onsubmit="saveProduct(event)">
-                    <input type="hidden" id="productId">
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="productName">Product Name</label>
-                            <input type="text" id="productName" placeholder="Product name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productCategory">Category</label>
-                            <select id="productCategory" required>
-                                <option value="">Select Category</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Stationery">Stationery</option>
-                                <option value="Grocery">Grocery</option>
-                                <option value="Clothing">Clothing</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productPrice">Price (₹)</label>
-                            <input type="number" id="productPrice" min="0" step="0.01" placeholder="Price" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productQuantity">Quantity</label>
-                            <input type="number" id="productQuantity" min="0" placeholder="Quantity" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productMinStock">Alert Level</label>
-                            <input type="number" id="productMinStock" min="1" value="5" placeholder="Minimum stock">
-                        </div>
-                    </div>
-
-                    <button type="submit" id="saveButton" class="btn btn-primary">Save Product</button>
-                    <button type="button" id="cancelButton" class="btn btn-secondary hidden" onclick="cancelEdit()">Cancel</button>
-                </form>
-            </section>
-
-            <section class="card">
-                <h2>Product List</h2>
-
-                <div class="filter-bar">
-                    <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterProducts()">
-                    <select id="categoryFilter" onchange="filterProducts()">
-                        <option value="ALL">All Categories</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Stationery">Stationery</option>
-                        <option value="Grocery">Grocery</option>
-                        <option value="Clothing">Clothing</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-
+        <!-- ===== TAB 1: INVENTORY ===== -->
+        <section class="card tab-panel" id="tab-inventory">
+            <h2>
+                <span>Product Catalog</span>
+                <button class="btn btn-primary btn-sm admin-only" id="addProductBtn">+ Add Product</button>
+            </h2>
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="Search by product name or SKU...">
+                <select id="categoryFilter">
+                    <option value="ALL">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Stationery">Stationery</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Cleaning Supplies">Cleaning Supplies</option>
+                    <option value="Office Pantry">Office Pantry</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="ALL">All Statuses</option>
+                    <option value="in_stock">In Stock</option>
+                    <option value="low_stock">Low Stock (≤ Alert Level)</option>
+                    <option value="out_of_stock">Out of Stock (0)</option>
+                </select>
+                <select id="sortSelect">
+                    <option value="name_asc">Sort: Name (A-Z)</option>
+                    <option value="name_desc">Sort: Name (Z-A)</option>
+                    <option value="price_asc">Sort: Price (Low → High)</option>
+                    <option value="price_desc">Sort: Price (High → Low)</option>
+                    <option value="stock_asc">Sort: Stock (Low → High)</option>
+                    <option value="stock_desc">Sort: Stock (High → Low)</option>
+                </select>
+            </div>
+            <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>SKU</th>
+                            <th class="sortable" data-sort="name">Name <span></span></th>
                             <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
+                            <th class="sortable" data-sort="price">Price <span></span></th>
+                            <th class="sortable" data-sort="stock">Stock <span></span></th>
                             <th>Status</th>
-                            <th>Stock Adjust</th>
+                            <th>Quick Adjust</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="productTableBody">
-                    </tbody>
+                    <tbody id="productTableBody"></tbody>
                 </table>
-            </section>
+            </div>
+            <div class="pagination-bar">
+                <span id="pageInfo"></span>
+                <div class="pagination-controls">
+                    <button class="btn btn-sm btn-outline" id="prevPageBtn">&larr; Previous</button>
+                    <span id="pageLabel" style="margin: 0 6px;"></span>
+                    <button class="btn btn-sm btn-outline" id="nextPageBtn">Next &rarr;</button>
+                </div>
+            </div>
+        </section>
 
+        <!-- ===== TAB 2: ANALYTICS ===== -->
+        <div class="tab-panel hidden" id="tab-analytics">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Doughnut: Valuation by Category</h3>
+                    <canvas id="chartValue" height="220"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Bar: Stock Units by Category</h3>
+                    <canvas id="chartUnits" height="220"></canvas>
+                </div>
+            </div>
+            <div class="chart-card" style="margin-bottom: 18px;">
+                <h3>
+                    <span>Line: Stock In (+) vs Stock Out (-) Trend</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline days-btn" data-days="7">7 Days</button>
+                        <button class="btn btn-sm btn-primary days-btn" data-days="30" style="margin-left: 6px;">30 Days</button>
+                    </div>
+                </h3>
+                <canvas id="chartTimeline" height="120"></canvas>
+            </div>
+            <div class="two-col">
+                <div class="card">
+                    <h2>
+                        <span>⚠️ Reorder Suggestions</span>
+                        <span style="font-size: 12px; color: #64748b;">Formula: 2×Reorder - Stock</span>
+                    </h2>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr><th>Product</th><th>Stock</th><th>Alert</th><th>Suggest Qty</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="reorderTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Recent Audit Trail (Last 15 Movements)</h2>
+                    <div class="activity-list" id="activityList"></div>
+                </div>
+            </div>
         </div>
 
-    </div>
+        <!-- ===== TAB 3: PURCHASE ORDERS ===== -->
+        <section class="card tab-panel hidden" id="tab-orders">
+            <h2>
+                <span>Purchase Orders Tracker</span>
+                <button class="btn btn-primary btn-sm no-staff" id="newPoBtn">+ New Purchase Order</button>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>PO #</th><th>Product</th><th>Supplier</th><th>Quantity</th><th>Created By</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="poTableBody"></tbody>
+                </table>
+            </div>
+        </section>
 
-    <script src="script.js"></script>
+        <!-- ===== TAB 4: SUPPLIERS ===== -->
+        <section class="card tab-panel hidden" id="tab-suppliers">
+            <h2>
+                <span>Suppliers Directory</span>
+                <button class="btn btn-primary btn-sm no-staff" id="addSupplierBtn">+ Add Supplier</button>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Company Name</th><th>Contact Person</th><th>Phone Number</th><th>Email</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="supplierTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== TAB 5: USERS (ADMIN) ===== -->
+        <section class="card tab-panel hidden" id="tab-users">
+            <h2>
+                <span>User Accounts &amp; RBAC</span>
+                <button class="btn btn-primary btn-sm" id="addUserBtn">+ Create User</button>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Username</th><th>Full Name</th><th>Assigned Role</th><th>Account Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Add / Edit Product -->
+<div class="modal-overlay hidden" id="productModal">
+    <div class="modal-box">
+        <h3 id="productModalTitle">Add New Product</h3>
+        <p>Fill out the details below.</p>
+        <form id="productForm">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Product Name</label>
+                <input type="text" id="pName" required>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Unique SKU</label>
+                    <input type="text" id="pSku" placeholder="e.g. ELE-099" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="pCategory">
+                        <option value="Electronics">Electronics</option>
+                        <option value="Stationery">Stationery</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Cleaning Supplies">Cleaning Supplies</option>
+                        <option value="Office Pantry">Office Pantry</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Price (₹)</label>
+                    <input type="number" id="pPrice" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Initial Stock</label>
+                    <input type="number" id="pQuantity" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Reorder Alert Threshold</label>
+                    <input type="number" id="pReorder" min="0" value="5">
+                </div>
+            </div>
+            <div class="modal-actions" style="margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-primary" id="productSubmitBtn">Save Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Stock Adjust -->
+<div class="modal-overlay hidden" id="adjustModal">
+    <div class="modal-box">
+        <h3 id="adjustTitle">Adjust Stock</h3>
+        <p id="adjustInfo"></p>
+        <form id="adjustForm">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Change (+ for Restock/Return, - for Sold/Damaged)</label>
+                <input type="number" id="adjustChange" placeholder="+5 or -3" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Reason for Movement</label>
+                <select id="adjustReason">
+                    <option value="sold">sold (Customer Sale)</option>
+                    <option value="returned">returned (Customer Return)</option>
+                    <option value="restock">restock (Inventory Delivery)</option>
+                    <option value="damaged">damaged (Damaged / Written-off)</option>
+                    <option value="correction">correction (Cycle Count Audit)</option>
+                    <option value="purchase_order">purchase_order (PO Intake)</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Audit Note / Reference</label>
+                <input type="text" id="adjustNote" placeholder="e.g. Invoice #203, Broken box">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-primary">Confirm Adjustment</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Restock -->
+<div class="modal-overlay hidden" id="restockModal">
+    <div class="modal-box">
+        <h3 id="restockTitle">Restock Delivery</h3>
+        <p id="restockInfo"></p>
+        <form id="restockForm">
+            <label>Quick Preset Batches</label>
+            <div id="restockPresets" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-sm btn-outline" data-qty="5">+5</button>
+                <button type="button" class="btn btn-sm btn-outline" data-qty="10">+10</button>
+                <button type="button" class="btn btn-sm btn-outline" data-qty="25">+25</button>
+                <button type="button" class="btn btn-sm btn-outline" data-qty="50">+50</button>
+                <button type="button" class="btn btn-sm btn-outline" data-qty="100">+100</button>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Units to Add</label>
+                <input type="number" id="restockQty" min="1" value="10" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Supplier (Optional)</label>
+                <select id="restockSupplier"></select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-success" id="restockSubmitBtn">Add Stock</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation -->
+<div class="modal-overlay hidden" id="deleteModal">
+    <div class="modal-box">
+        <h3>Confirm Product Deletion</h3>
+        <p id="deleteInfo"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete Product</button>
+        </div>
+    </div>
+</div>
+
+<!-- Product History Drawer -->
+<div class="drawer-overlay hidden" id="historyDrawer">
+    <div class="drawer-content">
+        <div class="drawer-header">
+            <div>
+                <h3 id="historyName" style="font-size: 17px; color: #0f172a; margin-bottom: 4px;"></h3>
+                <span class="sku-code" id="historySku"></span> &bull; <span class="category-tag" id="historyCategory"></span>
+            </div>
+            <button class="btn btn-sm btn-outline" data-close>✕ Close</button>
+        </div>
+        <div id="historySummary" style="background: #f8fafc; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 13px;"></div>
+        <h4 style="font-size: 14px; margin-bottom: 10px; color: #334155;">Movement Audit Trail</h4>
+        <div class="table-responsive" style="flex: 1; overflow-y: auto;">
+            <table>
+                <thead>
+                    <tr><th>Date</th><th>User</th><th>Change</th><th>Reason</th><th>Stock After</th></tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Purchase Order -->
+<div class="modal-overlay hidden" id="poModal">
+    <div class="modal-box">
+        <h3>Create Purchase Order</h3>
+        <p>Generate a purchase order to replenish inventory.</p>
+        <form id="poForm">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Product to Order</label>
+                <select id="poProduct" required></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Supplier</label>
+                <select id="poSupplier" required></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Order Quantity</label>
+                <input type="number" id="poQuantity" min="1" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-primary">Issue Purchase Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Supplier -->
+<div class="modal-overlay hidden" id="supplierModal">
+    <div class="modal-box">
+        <h3 id="supplierModalTitle">Add New Supplier</h3>
+        <form id="supplierForm">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Company / Supplier Name</label>
+                <input type="text" id="sName" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Contact Person</label>
+                <input type="text" id="sContact">
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Phone Number</label>
+                <input type="text" id="sPhone">
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Email Address</label>
+                <input type="email" id="sEmail">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Supplier</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Create User -->
+<div class="modal-overlay hidden" id="userModal">
+    <div class="modal-box">
+        <h3>Add New System User</h3>
+        <form id="userForm">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Username</label>
+                <input type="text" id="uUsername" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Full Name</label>
+                <input type="text" id="uFullName">
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Password (Min 6 chars)</label>
+                <input type="password" id="uPassword" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Role</label>
+                <select id="uRole">
+                    <option value="staff">Staff (Stock Adjust &amp; View)</option>
+                    <option value="manager">Manager (Restock, Suppliers, POs)</option>
+                    <option value="admin">Admin (Full Control, Products, Users)</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-primary">Create User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reset Password -->
+<div class="modal-overlay hidden" id="resetPwdModal">
+    <div class="modal-box">
+        <h3 id="resetPwdTitle">Reset Password</h3>
+        <form id="resetPwdForm">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>New Password (Min 6 characters)</label>
+                <input type="password" id="newPassword" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                <button type="submit" class="btn btn-primary">Save New Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
