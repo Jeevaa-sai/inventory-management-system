@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
     password: {
         type: String,
@@ -12,11 +13,20 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
+        enum: ["admin", "manager", "staff"],
         default: "staff"
     },
     fullName: {
         type: String,
         default: ""
+    },
+    active: {
+        type: Boolean,
+        default: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
