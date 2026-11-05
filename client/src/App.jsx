@@ -637,45 +637,47 @@ function App() {
         )}
       </nav>
 
-      {/* 4 Clickable KPI Cards */}
-      <section className="stats-grid">
-        <div
-          className="stat-card"
-          onClick={() => { setStatusFilter("ALL"); setCategoryFilter("ALL"); setPage(1); setActiveTab("inventory"); }}
-          title="Click to view all products"
-        >
-          <div className="stat-label">Total Products</div>
-          <div className="stat-number">{stats.totalProducts}</div>
-          <div className="stat-hint">Click to show all</div>
-        </div>
-        <div
-          className="stat-card success"
-          onClick={() => { setStatusFilter("in_stock"); setPage(1); setActiveTab("inventory"); }}
-          title="Click to filter in-stock items"
-        >
-          <div className="stat-label">Total Stock Units</div>
-          <div className="stat-number">{stats.totalQuantity}</div>
-          <div className="stat-hint">In-stock filter</div>
-        </div>
-        <div
-          className="stat-card alert"
-          onClick={() => { setStatusFilter("low_stock"); setPage(1); setActiveTab("inventory"); }}
-          title="Click to filter low stock items"
-        >
-          <div className="stat-label">Low Stock Items</div>
-          <div className="stat-number">{stats.lowStockCount}</div>
-          <div className="stat-hint">Click for reorder alert</div>
-        </div>
-        <div
-          className="stat-card value"
-          onClick={() => setActiveTab("analytics")}
-          title="Click to view valuation breakdown"
-        >
-          <div className="stat-label">Total Inventory Value</div>
-          <div className="stat-number">{formatINR(stats.totalValue)}</div>
-          <div className="stat-hint">View analytics breakdown</div>
-        </div>
-      </section>
+      {/* 4 Clickable KPI Cards (Only displayed on Inventory & Stock and Dashboard & Reports) */}
+      {(activeTab === "inventory" || activeTab === "analytics") && (
+        <section className="stats-grid">
+          <div
+            className="stat-card"
+            onClick={() => { setStatusFilter("ALL"); setCategoryFilter("ALL"); setPage(1); setActiveTab("inventory"); }}
+            title="Click to view all products"
+          >
+            <div className="stat-label">Total Products</div>
+            <div className="stat-number">{stats.totalProducts}</div>
+            <div className="stat-hint">Click to show all</div>
+          </div>
+          <div
+            className="stat-card success"
+            onClick={() => { setStatusFilter("in_stock"); setPage(1); setActiveTab("inventory"); }}
+            title="Click to filter in-stock items"
+          >
+            <div className="stat-label">Total Stock Units</div>
+            <div className="stat-number">{stats.totalQuantity}</div>
+            <div className="stat-hint">In-stock filter</div>
+          </div>
+          <div
+            className="stat-card alert"
+            onClick={() => { setStatusFilter("low_stock"); setPage(1); setActiveTab("inventory"); }}
+            title="Click to filter low stock items"
+          >
+            <div className="stat-label">Low Stock Items</div>
+            <div className="stat-number">{stats.lowStockCount}</div>
+            <div className="stat-hint">Click for reorder alert</div>
+          </div>
+          <div
+            className="stat-card value"
+            onClick={() => setActiveTab("analytics")}
+            title="Click to view valuation breakdown"
+          >
+            <div className="stat-label">Total Inventory Value</div>
+            <div className="stat-number">{formatINR(stats.totalValue)}</div>
+            <div className="stat-hint">View analytics breakdown</div>
+          </div>
+        </section>
+      )}
 
       {/* ================= TAB 1: INVENTORY & STOCK ================= */}
       {activeTab === "inventory" && (
